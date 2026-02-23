@@ -1,6 +1,7 @@
 using System.Threading;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class NotFinalResultBtnScript : MonoBehaviour
 {
@@ -25,6 +26,22 @@ public class NotFinalResultBtnScript : MonoBehaviour
     {
         this.number += number;
         tmp.text = this.number.ToString();
+        CheckIfWin();
+    }
+
+    void CheckIfWin()
+    {
+        ResultBtnScript finalResult = DataHolder.gameInfoManager.finalResultObs;
+        if (finalResult != null)
+        {
+            if (finalResult.GetNumber() == number)
+            {
+                if (!DataHolder.gameInfoManager.CheckFirstRowForAvailable())
+                {
+                    SceneManager.LoadScene("MainScene");
+                }
+            }
+        }
     }
     public int GetNumber()
     {

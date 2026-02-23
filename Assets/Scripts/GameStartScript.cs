@@ -46,6 +46,8 @@ public class GameStartScript : MonoBehaviour
 
     void Start()
     {
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        Application.targetFrameRate = 60;
         if (enableAutoSpacing)
         {
             spacing = objInFirstRow.transform.localScale.y * 1.2f;
@@ -62,6 +64,8 @@ public class GameStartScript : MonoBehaviour
 
         distanceFromCamera = Vector3.Distance(mainCamera.transform.position, transform.position);
         if (distanceFromCamera < 5f) distanceFromCamera = 10f;
+
+        AdaptScaleToCount();
 
         // Заполняем массивы случайными числами
         InitializeRandomMassive(arr1);
@@ -94,7 +98,108 @@ public class GameStartScript : MonoBehaviour
         DataHolder.gameInfoManager = manager;
     }
 
-    
+    void AdaptScaleToCount()
+    {
+        float cameraHeight = 2f * distanceFromCamera * Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+
+        // Базовый размер объекта (оригинальный масштаб)
+        float baseObjectHeight = objInFirstRow.transform.localScale.y;
+
+        // Желаемый размер объекта (можно настроить)
+        float desiredObjectHeight = 1.5f; // Желаемая высота объекта
+
+        // Максимально допустимая высота для всех объектов (80% экрана)
+        float maxTotalHeight = cameraHeight * 0.8f;
+
+        // Рассчитываем идеальный spacing (отступ между объектами)
+        float idealSpacing = desiredObjectHeight * 1.5f; // Объект + отступ
+
+        // Общая высота, которую займут все объекты с идеальным spacing
+        float totalHeightWithIdeal = (size - 1) * idealSpacing;
+
+        if (totalHeightWithIdeal <= maxTotalHeight)
+        {
+            // Объекты помещаются с идеальными параметрами
+            spacing = idealSpacing;
+
+            // Устанавливаем желаемый размер
+            Vector3 newScale = Vector3.one * desiredObjectHeight;
+            objInFirstRow.transform.localScale = newScale;
+            objInSecondRow.transform.localScale = newScale;
+            notFinalResultObject.transform.localScale = newScale;
+            resultObject.transform.localScale = newScale;
+
+            Debug.Log($"Objects fit with ideal size: {desiredObjectHeight}");
+        }
+        else
+        {
+            // Объекты не помещаются, нужно найти компромисс
+            // Рассчитываем максимально возможный размер объектов
+
+            // Сначала пробуем уменьшить spacing до минимального
+            float minSpacing = desiredObjectHeight * 1.1f; // Минимальный отступ
+
+            float totalHeightWithMinSpacing = (size - 1) * minSpacing;
+
+            if (totalHeightWithMinSpacing <= maxTotalHeight)
+            {
+                // Помещаются с минимальным spacing, размер оставляем желаемым
+                spacing = minSpacing;
+
+                Vector3 newScale = Vector3.one * desiredObjectHeight;
+                objInFirstRow.transform.localScale = newScale;
+                objInSecondRow.transform.localScale = newScale;
+                notFinalResultObject.transform.localScale = newScale;
+                resultObject.transform.localScale = newScale;
+
+                Debug.Log($"Using min spacing: {minSpacing} with size: {desiredObjectHeight}");
+            }
+            else
+            {
+                // Приходится уменьшать размер объектов
+                // Рассчитываем оптимальный размер, чтобы объекты поместились
+
+                // Доступное пространство для объектов
+                float availableSpace = maxTotalHeight;
+
+                // Количество промежутков между объектами
+                int gaps = size - 1;
+
+                // Рассчитываем размер объекта с учетом отступа
+                // Объект занимает место: objectHeight, отступ: objectHeight * 0.3f (30% от размера)
+                // totalHeight = gaps * (objectHeight + objectHeight * 0.3f) = gaps * objectHeight * 1.3f
+
+                float optimalObjectHeight = availableSpace / (gaps * 1.3f);
+
+                // Ограничиваем размер, чтобы объекты не стали слишком маленькими
+                float minAcceptableSize = 0.8f; // Минимальный приемлемый размер
+                float maxAcceptableSize = desiredObjectHeight; // Максимальный желаемый размер
+
+                optimalObjectHeight = Mathf.Clamp(optimalObjectHeight, minAcceptableSize, maxAcceptableSize);
+
+                // Рассчитываем spacing на основе оптимального размера
+                spacing = optimalObjectHeight * 1.3f;
+
+                // Применяем масштаб
+                Vector3 newScale = Vector3.one * optimalObjectHeight;
+                objInFirstRow.transform.localScale = newScale;
+                objInSecondRow.transform.localScale = newScale;
+                notFinalResultObject.transform.localScale = newScale;
+                resultObject.transform.localScale = newScale;
+
+                Debug.Log($"Compromise: size={optimalObjectHeight}, spacing={spacing} for {size} objects");
+            }
+        }
+
+        // Если включен автоспейсинг, используем рассчитанные значения
+        if (enableAutoSpacing)
+        {
+            // spacing уже рассчитан выше
+        }
+
+        Debug.Log($"Final settings - Size: {objInFirstRow.transform.localScale.y}, Spacing: {spacing}");
+    }
+
     void PlaceObjects()
     {
         if (mainCamera == null) return;

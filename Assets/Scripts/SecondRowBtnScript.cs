@@ -6,6 +6,7 @@ public class SecondRowBtnScript : MonoBehaviour
     private int number;
     private TextMeshPro tmp;
     public bool isAvailable = true;
+
     
     public bool isSelected = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -13,12 +14,16 @@ public class SecondRowBtnScript : MonoBehaviour
     {
         tmp = GetComponentInChildren<TextMeshPro>();
     }
+
+    
     public void Initialize(int number)
     {
         Debug.Log($"Number is {number}");
         this.number = number;
         tmp.text = number.ToString();
     }
+
+    
 
     public void ChangeIsAvailable(bool isAvailable)
     {
