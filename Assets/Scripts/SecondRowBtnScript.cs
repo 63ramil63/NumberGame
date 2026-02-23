@@ -8,7 +8,6 @@ public class SecondRowBtnScript : MonoBehaviour
     public bool isAvailable = true;
 
     
-    public bool isSelected = false;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -18,7 +17,6 @@ public class SecondRowBtnScript : MonoBehaviour
     
     public void Initialize(int number)
     {
-        Debug.Log($"Number is {number}");
         this.number = number;
         tmp.text = number.ToString();
     }
