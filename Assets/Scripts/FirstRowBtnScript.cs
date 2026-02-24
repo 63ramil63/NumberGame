@@ -5,6 +5,7 @@ public class FirstRowBtnScript : MonoBehaviour
 {
     private int number;
     private TextMeshPro tmp;
+    private SpriteRenderer spriteRenderer;
     public bool isAvailable = true;
     public bool isSelected = false;
 
@@ -12,13 +13,28 @@ public class FirstRowBtnScript : MonoBehaviour
 
     private LineRenderer lineRenderer;
 
+    [Header("Icons Sprite")]
+    [SerializeField]
+    Sprite baseIcon;
+    [SerializeField]
+    Sprite selectedIcon;
+    [SerializeField]
+    Sprite disavailableIcon;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
         tmp = GetComponentInChildren<TextMeshPro>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         SetupLineRenderer();
+    }
+
+    private void Start()
+    {
+        ChangeIcon();
     }
 
     public void Initialize(int number)
@@ -36,7 +52,7 @@ public class FirstRowBtnScript : MonoBehaviour
         lineRenderer.sortingOrder = 10; // Чтобы линия была поверх объектов
         lineRenderer.sortingLayerName = "Default"; // Укажите нужный слой
         Material lineMaterial = new Material(Shader.Find("Sprites/Default"));
-        lineMaterial.color = Color.yellow;
+        lineMaterial.color = Color.aliceBlue;
         lineRenderer.material = lineMaterial;
 
         lineRenderer.enabled = false;
@@ -48,29 +64,30 @@ public class FirstRowBtnScript : MonoBehaviour
         DrawConnectionLine();
     }
 
+    void ChangeIcon()
+    {
+        if (!isSelected && isAvailable)
+        {
+            spriteRenderer.sprite = baseIcon;
+        } else if (isSelected && isAvailable)
+        {
+            spriteRenderer.sprite = selectedIcon;
+        } else if (!isSelected && !isAvailable)
+        {
+            spriteRenderer.sprite = disavailableIcon;
+        }
+    }
+
     public void ChangeIsAvailable(bool isAvailable)
     {
         this.isAvailable = isAvailable;
-        tmp.text = "_" + number.ToString() + "_";
-    }
-
-    void ChangeText()
-    {
-        if (isSelected)
-        {
-            tmp.text = "_" + tmp.text;
-        }
-        else
-        {
-            tmp.text = number.ToString();
-        }
+        ChangeIcon();
     }
 
     public void ChangeIsSelected(bool isSelected)
     {
         CheckBeforeSelect();
         this.isSelected = isSelected;
-        ChangeText();
     }
 
     void CheckBeforeSelect()
@@ -87,6 +104,7 @@ public class FirstRowBtnScript : MonoBehaviour
         if (isAvailable)
         {
             ChangeIsSelected(!isSelected);
+            ChangeIcon();
         }
         else
         {
@@ -95,6 +113,7 @@ public class FirstRowBtnScript : MonoBehaviour
             secondRowBtnScript.ChangeIsAvailable(true);
             DecreaseNotFinalResult();
             DisconnectLine();
+            ChangeIcon();
         }
     }
 
