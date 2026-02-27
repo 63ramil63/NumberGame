@@ -6,6 +6,8 @@ public class UIScript : MonoBehaviour
 {
     Slider slider;
     TextMeshProUGUI textMeshPro;
+    [SerializeField]
+    TextMeshProUGUI record;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -20,16 +22,16 @@ public class UIScript : MonoBehaviour
         {
             DataHolder.countOfObj = (int)slider.value;
         }
-        textMeshPro.text = slider.value.ToString();
+        textMeshPro.SetText(slider.value.ToString());
         slider.onValueChanged.AddListener(v => {
             textMeshPro.text = v.ToString();
             DataHolder.countOfObj = (int) v;
+            DataHolder.UpdateRecord(record);
         });
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if (DataHolder.countOfObj == 0)
+        {
+            DataHolder.countOfObj = 2;
+        }
+        DataHolder.UpdateRecord(record);
     }
 }

@@ -52,20 +52,7 @@ public class SecondRowBtnScript : MonoBehaviour
     {
         this.isAvailable = isAvailable;
         ChangeIcon();
-        //ChangeText();
     }
-
-    //void ChangeText()
-    //{
-    //    if (isAvailable)
-    //    {
-    //        tmp.text = number.ToString();
-    //    }
-    //    else
-    //    {
-    //        tmp.text = "_" + number.ToString() + "_";
-    //    }
-    //}
 
     private void OnMouseDown()
     {

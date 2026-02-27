@@ -47,6 +47,8 @@ public class GameStartScript : MonoBehaviour
 
     void Start()
     {
+        DataHolder.isGameActive = true;
+
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = 60;
         if (enableAutoSpacing)
@@ -114,13 +116,13 @@ public class GameStartScript : MonoBehaviour
         float baseObjectHeight = objInFirstRow.transform.localScale.y;
 
         // Желаемый размер объекта (можно настроить)
-        float desiredObjectHeight = 1.5f; // Желаемая высота объекта
+        float desiredObjectHeight = 2.0f; // Желаемая высота объекта
 
-        // Максимально допустимая высота для всех объектов (80% экрана)
-        float maxTotalHeight = cameraHeight * 0.8f;
+        // Максимально допустимая высота для всех объектов (85% экрана)
+        float maxTotalHeight = cameraHeight * 0.85f;
 
         // Рассчитываем идеальный spacing (отступ между объектами)
-        float idealSpacing = desiredObjectHeight * 1.5f; // Объект + отступ
+        float idealSpacing = desiredObjectHeight * 1.2f; // Объект + отступ
 
         // Общая высота, которую займут все объекты с идеальным spacing
         float totalHeightWithIdeal = (size - 1) * idealSpacing;
@@ -137,7 +139,6 @@ public class GameStartScript : MonoBehaviour
             notFinalResultObject.transform.localScale = newScale;
             resultObject.transform.localScale = newScale;
 
-            Debug.Log($"Objects fit with ideal size: {desiredObjectHeight}");
         }
         else
         {
@@ -195,17 +196,8 @@ public class GameStartScript : MonoBehaviour
                 notFinalResultObject.transform.localScale = newScale;
                 resultObject.transform.localScale = newScale;
 
-                Debug.Log($"Compromise: size={optimalObjectHeight}, spacing={spacing} for {size} objects");
             }
         }
-
-        // Если включен автоспейсинг, используем рассчитанные значения
-        if (enableAutoSpacing)
-        {
-            // spacing уже рассчитан выше
-        }
-
-        Debug.Log($"Final settings - Size: {objInFirstRow.transform.localScale.y}, Spacing: {spacing}");
     }
 
     void PlaceObjects()
@@ -312,7 +304,6 @@ public class GameStartScript : MonoBehaviour
 
 
             newResultObj.name = "NotFinalResultObject";
-        //newResultObj.transform.parent = transform;
     }
 
     void PlaceResultRow(Vector3 centerPoint, float xPos)
@@ -336,7 +327,6 @@ public class GameStartScript : MonoBehaviour
         }
 
         newResultObj.name = "ResultObject";
-        //newResultObj.transform.parent = transform;
     }
 
     void ShuffleArray<T>(T[] array)

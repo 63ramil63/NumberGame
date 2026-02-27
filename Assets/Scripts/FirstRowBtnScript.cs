@@ -88,6 +88,7 @@ public class FirstRowBtnScript : MonoBehaviour
     {
         CheckBeforeSelect();
         this.isSelected = isSelected;
+        ChangeIcon();
     }
 
     void CheckBeforeSelect()
@@ -101,19 +102,22 @@ public class FirstRowBtnScript : MonoBehaviour
 
     private void OnMouseDown()
     {
-        if (isAvailable)
+        if (DataHolder.isGameActive)
         {
-            ChangeIsSelected(!isSelected);
-            ChangeIcon();
-        }
-        else
-        {
-            ChangeIsAvailable(true);
-            ChangeIsSelected(false);
-            secondRowBtnScript.ChangeIsAvailable(true);
-            DecreaseNotFinalResult();
-            DisconnectLine();
-            ChangeIcon();
+            if (isAvailable)
+            {
+                ChangeIsSelected(!isSelected);
+                ChangeIcon();
+            }
+            else
+            {
+                ChangeIsAvailable(true);
+                ChangeIsSelected(false);
+                secondRowBtnScript.ChangeIsAvailable(true);
+                DecreaseNotFinalResult();
+                DisconnectLine();
+                ChangeIcon();
+            }
         }
     }
 

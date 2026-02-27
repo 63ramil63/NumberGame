@@ -1,13 +1,15 @@
+
 using UnityEngine;
 
 public class MenuStartScript : MonoBehaviour
 {
     private static bool isActivated = false;
     [SerializeField]
-    GameObject background;
+    private GameObject background;
 
     [SerializeField]
-    Sprite[] backgrounds;
+    private Sprite[] backgrounds;
+
     private void Awake()
     {
         if (background != null && backgrounds.Length > 0 && !isActivated)

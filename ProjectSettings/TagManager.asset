@@ -9,6 +9,7 @@ TagManager:
   - SecondRow
   - ScriptHolder
   - Count
+  - Timer
   layers:
   - Default
   - TransparentFX

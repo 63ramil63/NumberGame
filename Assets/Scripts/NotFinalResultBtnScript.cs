@@ -7,6 +7,7 @@ public class NotFinalResultBtnScript : MonoBehaviour
 {
     private int number;
     private TextMeshPro tmp;
+    private GameUIController gameUIController;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -15,30 +16,46 @@ public class NotFinalResultBtnScript : MonoBehaviour
         {
             Debug.Log("Error initialize tmp");
         }
+        gameUIController = GameObject.Find("Canvas").GetComponent<GameUIController>();
     }
     public void Initialize(int number)
     {
         this.number = number;
-        tmp.text = number.ToString();
+        tmp.SetText(number.ToString());
     }
 
     public void ChangeNumber(int number)
     {
         this.number += number;
-        tmp.text = this.number.ToString();
+        tmp.SetText(this.number.ToString());
         CheckIfWin();
     }
 
     void CheckIfWin()
     {
         ResultBtnScript finalResult = DataHolder.gameInfoManager.finalResultObs;
+        float newTime = gameUIController.getCurrentTime();
         if (finalResult != null)
         {
             if (finalResult.GetNumber() == number)
             {
                 if (!DataHolder.gameInfoManager.CheckFirstRowForAvailable())
                 {
-                    SceneManager.LoadScene("MainScene");
+                    DataHolder.isGameActive = false;
+                    gameUIController.SetFinalTime(newTime);
+                    Debug.Log(newTime);
+                    if (!PlayerPrefs.HasKey("Record" + DataHolder.countOfObj))
+                    {
+                        PlayerPrefs.SetFloat("Record" + DataHolder.countOfObj, newTime);
+                    } 
+                    else
+                    {
+                        float oldTime = PlayerPrefs.GetFloat("Record" + DataHolder.countOfObj);
+                        if (newTime < oldTime)
+                        {
+                            PlayerPrefs.SetFloat("Record" + DataHolder.countOfObj, newTime);
+                        }
+                    }
                 }
             }
         }
