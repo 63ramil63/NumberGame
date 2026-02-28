@@ -1312,10 +1312,18 @@ MonoBehaviour:
   objInSecondRow: {fileID: 7771417423626908473, guid: e89df5ba200ae8849abe69a38d56e82d, type: 3}
   notFinalResultObject: {fileID: 7771417423626908473, guid: edd6a077f93554348bbcb5c0f2eebb45, type: 3}
   resultObject: {fileID: 7771417423626908473, guid: 69fe99aea9ac73b41beddf85735b4bec, type: 3}
-  enableAutoSpacing: 1
+  enableAutoSpacing: 0
   spacing: 1
   horizontalPadding: 0
   resultOffset: 2
+  availableHeightRatio: 0.9
+  minObjectHeight: 1.5
+  maxObjectHeight: 3
+  desiredGap: 0.1
+  firstRowNormX: 0.15
+  secondRowNormX: 0.5
+  thirdRowNormX: 0.7
+  resultNormX: 0.9
 --- !u!114 &1959989494
 MonoBehaviour:
   m_ObjectHideFlags: 0

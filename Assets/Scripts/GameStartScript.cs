@@ -11,10 +11,19 @@ public class GameStartScript : MonoBehaviour
     public GameObject resultObject;
 
     [Header("Параметры размещения")]
-    public bool enableAutoSpacing;
     public float spacing = 2f;              // Вертикальный отступ между объектами
-    public float horizontalPadding = 1f;    // Отступ от краев для первого и второго рядов
-    public float resultOffset = 3f;          // Дополнительное смещение для результата
+
+    [Header("Настройки адаптации под размер")]
+    public float availableHeightRatio = 0.9f;   // доля высоты экрана, занимаемая колонкой (0.9 = 90%)
+    public float minObjectHeight = 1.5f;        // минимальный допустимый размер объекта
+    public float maxObjectHeight = 4.0f;        // максимальный допустимый размер объекта
+    public float desiredGap = 0.1f;              // желаемый зазор между объектами
+
+    [Header("Настройки горизонтального размещения")]
+    public float firstRowNormX = 0.15f;   // позиция первого ряда (0 = левый край, 1 = правый край)
+    public float secondRowNormX = 0.35f;  // позиция второго ряда
+    public float thirdRowNormX = 0.55f;   // позиция третьего ряда (нефинальный результат)
+    public float resultNormX = 0.8f;      // позиция результата
 
     private FirstRowBtnScript[] firstRowObjs;
     private SecondRowBtnScript[] secondRowObjs;
@@ -51,10 +60,6 @@ public class GameStartScript : MonoBehaviour
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
         Application.targetFrameRate = 60;
-        if (enableAutoSpacing)
-        {
-            spacing = objInFirstRow.transform.localScale.y * 1.2f;
-        }
 
         size = DataHolder.countOfObj;
         mainCamera = Camera.main;
@@ -81,19 +86,17 @@ public class GameStartScript : MonoBehaviour
         ShuffleArray(arr1);
         ShuffleArray(arr2);
 
-
         // Располагаем объекты
         PlaceObjects();
 
         InitializeGameInfoManager();
-        
+
         if (DataHolder.backgrounds != null && DataHolder.backgrounds.Length > 0)
         {
             backGround.GetComponent<SpriteRenderer>().sprite = DataHolder.backgrounds[Random.Range(0, DataHolder.backgrounds.Length)];
         }
 
         CameraView.ScaleToFillCamera(backGround, Camera.main, false);
-
     }
 
     void InitializeGameInfoManager()
@@ -108,120 +111,118 @@ public class GameStartScript : MonoBehaviour
         DataHolder.gameInfoManager = manager;
     }
 
-    void AdaptScaleToCount()
+    float GetCameraHeight()
     {
-        float cameraHeight = 2f * distanceFromCamera * Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
-
-        // Базовый размер объекта (оригинальный масштаб)
-        float baseObjectHeight = objInFirstRow.transform.localScale.y;
-
-        // Желаемый размер объекта (можно настроить)
-        float desiredObjectHeight = 2.0f; // Желаемая высота объекта
-
-        // Максимально допустимая высота для всех объектов (85% экрана)
-        float maxTotalHeight = cameraHeight * 0.85f;
-
-        // Рассчитываем идеальный spacing (отступ между объектами)
-        float idealSpacing = desiredObjectHeight * 1.2f; // Объект + отступ
-
-        // Общая высота, которую займут все объекты с идеальным spacing
-        float totalHeightWithIdeal = (size - 1) * idealSpacing;
-
-        if (totalHeightWithIdeal <= maxTotalHeight)
+        if (mainCamera.orthographic)
         {
-            // Объекты помещаются с идеальными параметрами
-            spacing = idealSpacing;
-
-            // Устанавливаем желаемый размер
-            Vector3 newScale = Vector3.one * desiredObjectHeight;
-            objInFirstRow.transform.localScale = newScale;
-            objInSecondRow.transform.localScale = newScale;
-            notFinalResultObject.transform.localScale = newScale;
-            resultObject.transform.localScale = newScale;
-
+            // Для ортографической камеры высота = 2 * orthographicSize
+            return 2f * mainCamera.orthographicSize;
         }
         else
         {
-            // Объекты не помещаются, нужно найти компромисс
-            // Рассчитываем максимально возможный размер объектов
-
-            // Сначала пробуем уменьшить spacing до минимального
-            float minSpacing = desiredObjectHeight * 1.1f; // Минимальный отступ
-
-            float totalHeightWithMinSpacing = (size - 1) * minSpacing;
-
-            if (totalHeightWithMinSpacing <= maxTotalHeight)
-            {
-                // Помещаются с минимальным spacing, размер оставляем желаемым
-                spacing = minSpacing;
-
-                Vector3 newScale = Vector3.one * desiredObjectHeight;
-                objInFirstRow.transform.localScale = newScale;
-                objInSecondRow.transform.localScale = newScale;
-                notFinalResultObject.transform.localScale = newScale;
-                resultObject.transform.localScale = newScale;
-
-                Debug.Log($"Using min spacing: {minSpacing} with size: {desiredObjectHeight}");
-            }
-            else
-            {
-                // Приходится уменьшать размер объектов
-                // Рассчитываем оптимальный размер, чтобы объекты поместились
-
-                // Доступное пространство для объектов
-                float availableSpace = maxTotalHeight;
-
-                // Количество промежутков между объектами
-                int gaps = size - 1;
-
-                // Рассчитываем размер объекта с учетом отступа
-                // Объект занимает место: objectHeight, отступ: objectHeight * 0.3f (30% от размера)
-                // totalHeight = gaps * (objectHeight + objectHeight * 0.3f) = gaps * objectHeight * 1.3f
-
-                float optimalObjectHeight = availableSpace / (gaps * 1.3f);
-
-                // Ограничиваем размер, чтобы объекты не стали слишком маленькими
-                float minAcceptableSize = 0.8f; // Минимальный приемлемый размер
-                float maxAcceptableSize = desiredObjectHeight; // Максимальный желаемый размер
-
-                optimalObjectHeight = Mathf.Clamp(optimalObjectHeight, minAcceptableSize, maxAcceptableSize);
-
-                // Рассчитываем spacing на основе оптимального размера
-                spacing = optimalObjectHeight * 1.3f;
-
-                // Применяем масштаб
-                Vector3 newScale = Vector3.one * optimalObjectHeight;
-                objInFirstRow.transform.localScale = newScale;
-                objInSecondRow.transform.localScale = newScale;
-                notFinalResultObject.transform.localScale = newScale;
-                resultObject.transform.localScale = newScale;
-
-            }
+            // Для перспективной камеры используем расстояние до плоскости объектов
+            return 2f * distanceFromCamera * Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
         }
+    }
+
+    void AdaptScaleToCount()
+    {
+        if (size <= 0) return;
+
+        float cameraHeight = GetCameraHeight();
+        float availableHeight = cameraHeight * availableHeightRatio;
+
+        float finalHeight;
+        float finalGap;
+
+        if (size == 1)
+        {
+            finalHeight = Mathf.Min(availableHeight, maxObjectHeight);
+            finalGap = 0f;
+        }
+        else
+        {
+            // Оптимальный размер при желаемом зазоре
+            float heightWithDesiredGap = (availableHeight - (size - 1) * desiredGap) / size;
+
+            if (heightWithDesiredGap >= minObjectHeight && heightWithDesiredGap <= maxObjectHeight)
+            {
+                // Идеальный вариант
+                finalHeight = heightWithDesiredGap;
+                finalGap = desiredGap;
+            }
+            else if (heightWithDesiredGap < minObjectHeight)
+            {
+                // Пытаемся достичь minObjectHeight, уменьшая зазор
+                float gapForMin = (availableHeight - size * minObjectHeight) / (size - 1);
+                if (gapForMin >= 0)
+                {
+                    finalHeight = minObjectHeight;
+                    finalGap = gapForMin;
+                }
+                else
+                {
+                    // Даже с нулевым зазором не влезает — берём максимально возможный размер
+                    finalHeight = availableHeight / size;
+                    finalGap = 0f;
+                }
+            }
+            else // heightWithDesiredGap > maxObjectHeight
+            {
+                // Пытаемся достичь maxObjectHeight, возможно увеличивая зазор
+                float gapForMax = (availableHeight - size * maxObjectHeight) / (size - 1);
+                if (gapForMax >= 0)
+                {
+                    finalHeight = maxObjectHeight;
+                    finalGap = gapForMax;
+                }
+                else
+                {
+                    // Даже с нулевым зазором не влезает — уменьшаем размер
+                    finalHeight = availableHeight / size;
+                    finalGap = 0f;
+                }
+            }
+
+            // Убеждаемся, что finalHeight не превышает maxObjectHeight
+            finalHeight = Mathf.Min(finalHeight, maxObjectHeight);
+        }
+
+        // Расстояние между центрами объектов
+        spacing = finalHeight + finalGap;
+
+        // Применяем масштаб ко всем префабам
+        Vector3 newScale = Vector3.one * finalHeight;
+        objInFirstRow.transform.localScale = newScale;
+        objInSecondRow.transform.localScale = newScale;
+        notFinalResultObject.transform.localScale = newScale;
+        resultObject.transform.localScale = newScale;
+
+        // Отладка: проверьте значения в консоли
+        Debug.Log($"size: {size}, cameraHeight: {cameraHeight}, availableHeight: {availableHeight}, finalHeight: {finalHeight}, finalGap: {finalGap}");
     }
 
     void PlaceObjects()
     {
         if (mainCamera == null) return;
 
-        float cameraHeight = 2f * distanceFromCamera * Mathf.Tan(mainCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+        float cameraHeight = GetCameraHeight();
         float cameraWidth = cameraHeight * mainCamera.aspect;
 
+        // Ширина объекта после масштабирования (предполагаем квадратную форму)
+        float objWidth = objInFirstRow.transform.localScale.x;
+
+        // Доступный диапазон для центра объекта (с учётом половины ширины)
+        float leftBound = -cameraWidth / 2f + objWidth / 2f;
+        float rightBound = cameraWidth / 2f - objWidth / 2f;
+
+        // Преобразуем нормированные координаты в мировые
+        float firstRowX = Mathf.Lerp(leftBound, rightBound, firstRowNormX);
+        float secondRowX = Mathf.Lerp(leftBound, rightBound, secondRowNormX);
+        float thirdRowX = Mathf.Lerp(leftBound, rightBound, thirdRowNormX);
+        float resultX = Mathf.Lerp(leftBound, rightBound, resultNormX);
+
         Vector3 centerPoint = mainCamera.transform.position + mainCamera.transform.forward * distanceFromCamera;
-
-        // Вычисляем границы всей видимой области
-        float leftEdge = -cameraWidth / 2f;
-        float rightEdge = cameraWidth / 2f;
-
-        // Граница между 80% и 20% областями
-        float splitPoint = leftEdge + cameraWidth * 0.8f;
-
-        // Позиции для рядов с учетом отступов
-        float firstRowX = leftEdge + horizontalPadding;           // Первый ряд - с отступом от левого края
-        float secondRowX = splitPoint * 0.2f;        // Второй ряд
-        float thirdRowX = splitPoint - horizontalPadding; // Третий ряд 
-        float resultX = (splitPoint + rightEdge) / 2f + resultOffset; // Результат со смещением
-
 
         PlaceFirstRow(centerPoint, firstRowX);
         PlaceSecondRow(centerPoint, secondRowX);
@@ -236,7 +237,6 @@ public class GameStartScript : MonoBehaviour
         for (int i = 0; i < arr1.Length; i++)
         {
             // Распределяем объекты равномерно по вертикали с центром в 0
-            // Формула: позиция = (индекс - (длина-1)/2) * spacing
             float yPos = (i - (arr1.Length - 1) / 2f) * spacing;
 
             GameObject newObj = Instantiate(objInFirstRow,
@@ -262,7 +262,6 @@ public class GameStartScript : MonoBehaviour
 
         for (int i = 0; i < arr2.Length; i++)
         {
-            // Та же формула для второго ряда
             float yPos = (i - (arr2.Length - 1) / 2f) * spacing;
 
             GameObject newObj = Instantiate(objInSecondRow,
@@ -302,8 +301,7 @@ public class GameStartScript : MonoBehaviour
             Debug.Log($"Error while initializing script");
         }
 
-
-            newResultObj.name = "NotFinalResultObject";
+        newResultObj.name = "NotFinalResultObject";
     }
 
     void PlaceResultRow(Vector3 centerPoint, float xPos)
