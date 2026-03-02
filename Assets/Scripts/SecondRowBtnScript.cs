@@ -14,6 +14,8 @@ public class SecondRowBtnScript : MonoBehaviour
     [SerializeField]
     Sprite disavailableIcon;
 
+    private FirstRowBtnScript connectedObj;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -24,7 +26,6 @@ public class SecondRowBtnScript : MonoBehaviour
     private void Start()
     {
         ChangeIcon();
-
     }
 
 
@@ -56,20 +57,26 @@ public class SecondRowBtnScript : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (!DataHolder.isGameActive)
+        {
+            return;
+        }
         if (isAvailable)
         {
-            FirstRowBtnScript fRowScript = DataHolder.gameInfoManager.FindSelectedObjectIn1Row();
-            if (fRowScript != null)
+            connectedObj = DataHolder.gameInfoManager.FindSelectedObjectIn1Row();
+            if (connectedObj != null)
             {
-                fRowScript.ChangeIsSelected(false);
-                fRowScript.ChangeIsAvailable(false);
-                fRowScript.SetConnectedBtn(this);
-                NotFinalResultBtnScript notFinalRes = DataHolder.gameInfoManager.notFinalResultObj;
-                if (notFinalRes != null)
-                {
-                    notFinalRes.ChangeNumber(fRowScript.GetNumber() * number);
-                    ChangeIsAvailable(false);
-                }
+                connectedObj.CloseObject(this);
+            }
+        }
+        else
+        {
+            connectedObj.FreeObj();
+            FirstRowBtnScript firstRowBtnScript = DataHolder.gameInfoManager.FindSelectedObjectIn1Row();
+            if (firstRowBtnScript != null)
+            {
+                connectedObj = firstRowBtnScript;
+                connectedObj.CloseObject(this);
             }
         }
     }

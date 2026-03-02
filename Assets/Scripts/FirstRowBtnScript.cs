@@ -61,6 +61,7 @@ public class FirstRowBtnScript : MonoBehaviour
     public void SetConnectedBtn(SecondRowBtnScript script)
     {
         secondRowBtnScript = script;
+        secondRowBtnScript.ChangeIsAvailable(false);
         DrawConnectionLine();
     }
 
@@ -86,7 +87,15 @@ public class FirstRowBtnScript : MonoBehaviour
 
     public void ChangeIsSelected(bool isSelected)
     {
-        CheckBeforeSelect();
+        if (isSelected)
+        {
+            // Если выделяем этот объект – снимаем выделение с любого другого выделенного
+            FirstRowBtnScript selected = DataHolder.gameInfoManager.FindSelectedObjectIn1Row();
+            if (selected != null && selected != this)
+            {
+                selected.ChangeIsSelected(false);
+            }
+        }
         this.isSelected = isSelected;
         ChangeIcon();
     }
@@ -111,14 +120,28 @@ public class FirstRowBtnScript : MonoBehaviour
             }
             else
             {
-                ChangeIsAvailable(true);
-                ChangeIsSelected(false);
-                secondRowBtnScript.ChangeIsAvailable(true);
-                DecreaseNotFinalResult();
-                DisconnectLine();
-                ChangeIcon();
+                FreeObj();
             }
         }
+    }
+
+    public void FreeObj()
+    {
+        ChangeIsAvailable(true);
+        ChangeIsSelected(false);
+        secondRowBtnScript.ChangeIsAvailable(true);
+        DecreaseNotFinalResult();
+        DisconnectLine();
+        ChangeIcon();
+        secondRowBtnScript = null;
+    }
+
+    public void CloseObject(SecondRowBtnScript script)
+    {
+        ChangeIsSelected(false);
+        ChangeIsAvailable(false);
+        SetConnectedBtn(script);
+        IncreaseNotFinalResult();
     }
 
     void DecreaseNotFinalResult()
@@ -128,6 +151,16 @@ public class FirstRowBtnScript : MonoBehaviour
         {
             script.ChangeNumber(-secondRowBtnScript.GetNumber() * this.number);
             secondRowBtnScript = null;
+        }
+    }
+
+    void IncreaseNotFinalResult()
+    {
+        NotFinalResultBtnScript notFinalRes = DataHolder.gameInfoManager.notFinalResultObj;
+        if (notFinalRes != null)
+        {
+            notFinalRes.ChangeNumber(number * secondRowBtnScript.GetNumber());
+            ChangeIsAvailable(false);
         }
     }
 
