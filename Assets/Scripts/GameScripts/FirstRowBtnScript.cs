@@ -97,16 +97,9 @@ public class FirstRowBtnScript : MonoBehaviour
             }
         }
         this.isSelected = isSelected;
+        int i = Random.Range(0, DataHolder.firstRowBtnSound.Length);
+        SoundManagerScript.Instance.PlaySound(DataHolder.firstRowBtnSound[i]);
         ChangeIcon();
-    }
-
-    void CheckBeforeSelect()
-    {
-        FirstRowBtnScript script = DataHolder.gameInfoManager.FindSelectedObjectIn1Row();
-        if (script != null && !isSelected)
-        {
-            script.ChangeIsSelected(false);
-        }
     }
 
     private void OnMouseDown()

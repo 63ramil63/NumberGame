@@ -6,6 +6,10 @@ public class DataHolder : MonoBehaviour
     public static int countOfObj;
     public static GameInfoManager gameInfoManager;
     public static Sprite[] backgrounds;
+    public static AudioClip startGameBtnSound;
+    public static AudioClip endGameSound;
+    public static AudioClip[] firstRowBtnSound;
+    public static AudioClip[] secondRowBtnSound;
 
     public static bool isGameActive = false;
 

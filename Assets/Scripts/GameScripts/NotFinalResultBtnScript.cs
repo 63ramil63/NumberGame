@@ -43,7 +43,10 @@ public class NotFinalResultBtnScript : MonoBehaviour
                 {
                     DataHolder.isGameActive = false;
                     gameUIController.SetFinalTime(newTime);
-                    Debug.Log(newTime);
+                    if (DataHolder.endGameSound != null)
+                    {
+                        AudioSource.PlayClipAtPoint(DataHolder.endGameSound, Camera.main.transform.position, 1.0f);
+                    }
                     if (!PlayerPrefs.HasKey("Record" + DataHolder.countOfObj))
                     {
                         PlayerPrefs.SetFloat("Record" + DataHolder.countOfObj, newTime);

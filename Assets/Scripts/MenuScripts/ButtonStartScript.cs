@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,6 +14,10 @@ public class ButtonStartScript : MonoBehaviour
     }
     void LoadScene()
     {
+        if (DataHolder.startGameBtnSound != null)
+        {
+            SoundManagerScript.Instance.PlaySound(DataHolder.startGameBtnSound);
+        }
         SceneManager.LoadScene("GameScene");
     }
 }

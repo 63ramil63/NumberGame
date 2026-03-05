@@ -79,6 +79,8 @@ public class SecondRowBtnScript : MonoBehaviour
                 connectedObj.CloseObject(this);
             }
         }
+        int i = Random.Range(0, DataHolder.secondRowBtnSound.Length);
+        SoundManagerScript.Instance.PlaySound(DataHolder.secondRowBtnSound[i]);
     }
 
     public int GetNumber()

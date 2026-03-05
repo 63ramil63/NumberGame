@@ -18,11 +18,13 @@ public class GameUIController : MonoBehaviour
 
     public void LoadMainScene()
     {
+        SoundManagerScript.Instance.PlaySound(DataHolder.startGameBtnSound);
         SceneManager.LoadScene("MainScene");
     }
 
     public void RetryGame()
     {
+        SoundManagerScript.Instance.PlaySound(DataHolder.startGameBtnSound);
         SceneManager.LoadScene("GameScene");
     }
 
