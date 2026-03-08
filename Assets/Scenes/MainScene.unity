@@ -483,6 +483,15 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 23e01159110ddd841977caeb38b519c5, type: 3}
   secondRowBtnSound:
   - {fileID: 8300000, guid: 4f79558bdf43c034084a9d39fe0c23e8, type: 3}
+  spacing: 1
+  availableHeightRatio: 0.9
+  minObjectHeight: 1.5
+  maxObjectHeight: 2.5
+  desiredGap: 0.1
+  firstRowNormX: 0.1
+  secondRowNormX: 0.45
+  thirdRowNormX: 0.7
+  resultNormX: 0.9
 --- !u!4 &191529984
 Transform:
   m_ObjectHideFlags: 0

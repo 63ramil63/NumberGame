@@ -11,19 +11,19 @@ public class GameStartScript : MonoBehaviour
     public GameObject resultObject;
 
     [Header("Параметры размещения")]
-    public float spacing = 2f;              // Вертикальный отступ между объектами
+    public float spacing;              // Вертикальный отступ между объектами
 
     [Header("Настройки адаптации под размер")]
-    public float availableHeightRatio = 0.9f;   // доля высоты экрана, занимаемая колонкой (0.9 = 90%)
-    public float minObjectHeight = 1.5f;        // минимальный допустимый размер объекта
-    public float maxObjectHeight = 4.0f;        // максимальный допустимый размер объекта
-    public float desiredGap = 0.1f;              // желаемый зазор между объектами
+    public float availableHeightRatio;   // доля высоты экрана, занимаемая колонкой (0.9 = 90%)
+    public float minObjectHeight;        // минимальный допустимый размер объекта
+    public float maxObjectHeight;        // максимальный допустимый размер объекта
+    public float desiredGap;              // желаемый зазор между объектами
 
     [Header("Настройки горизонтального размещения")]
-    public float firstRowNormX = 0.15f;   // позиция первого ряда (0 = левый край, 1 = правый край)
-    public float secondRowNormX = 0.35f;  // позиция второго ряда
-    public float thirdRowNormX = 0.55f;   // позиция третьего ряда (нефинальный результат)
-    public float resultNormX = 0.8f;      // позиция результата
+    public float firstRowNormX;   // позиция первого ряда (0 = левый край, 1 = правый край)
+    public float secondRowNormX;  // позиция второго ряда
+    public float thirdRowNormX;   // позиция третьего ряда (нефинальный результат)
+    public float resultNormX;      // позиция результата
 
     private FirstRowBtnScript[] firstRowObjs;
     private SecondRowBtnScript[] secondRowObjs;
@@ -38,7 +38,7 @@ public class GameStartScript : MonoBehaviour
     int[] arr1;
     int[] arr2;
 
-    void CalculateResult()
+    private void CalculateResult()
     {
         for (int i = 0; i < size; i++)
         {
@@ -46,7 +46,7 @@ public class GameStartScript : MonoBehaviour
         }
     }
 
-    void InitializeRandomMassive(int[] arr)
+    private void InitializeRandomMassive(int[] arr)
     {
         for (int i = 0; i < size; i++)
         {
@@ -54,8 +54,32 @@ public class GameStartScript : MonoBehaviour
         }
     }
 
-    void Start()
+    private void InitializeTransformForObj()
     {
+        spacing = DataHolder.spacing;
+
+        if (DataHolder.countOfObj < 4)
+        {
+            availableHeightRatio = 0.6f;
+        } else
+        {
+            availableHeightRatio = DataHolder.availableHeightRatio;
+        }
+        minObjectHeight = DataHolder.minObjectHeight;
+        maxObjectHeight = DataHolder.maxObjectHeight;
+        desiredGap = DataHolder.desiredGap;
+
+        firstRowNormX = DataHolder.firstRowNormX;
+        secondRowNormX = DataHolder.secondRowNormX;
+        thirdRowNormX = DataHolder.thirdRowNormX;
+        resultNormX = DataHolder.resultNormX;
+    }
+
+    private void Start()
+    {
+
+        InitializeTransformForObj();
+
         DataHolder.isGameActive = true;
 
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
@@ -99,7 +123,7 @@ public class GameStartScript : MonoBehaviour
         CameraView.ScaleToFillCamera(backGround, Camera.main, false);
     }
 
-    void InitializeGameInfoManager()
+    private void InitializeGameInfoManager()
     {
         GameInfoManager manager = GetComponent<GameInfoManager>();
         if (manager == null)
@@ -111,7 +135,7 @@ public class GameStartScript : MonoBehaviour
         DataHolder.gameInfoManager = manager;
     }
 
-    float GetCameraHeight()
+    private float GetCameraHeight()
     {
         if (mainCamera.orthographic)
         {
@@ -125,7 +149,7 @@ public class GameStartScript : MonoBehaviour
         }
     }
 
-    void AdaptScaleToCount()
+    private void AdaptScaleToCount()
     {
         if (size <= 0) return;
 
@@ -202,7 +226,7 @@ public class GameStartScript : MonoBehaviour
         Debug.Log($"size: {size}, cameraHeight: {cameraHeight}, availableHeight: {availableHeight}, finalHeight: {finalHeight}, finalGap: {finalGap}");
     }
 
-    void PlaceObjects()
+    private void PlaceObjects()
     {
         if (mainCamera == null) return;
 
@@ -230,7 +254,7 @@ public class GameStartScript : MonoBehaviour
         PlaceResultRow(centerPoint, resultX);
     }
 
-    void PlaceFirstRow(Vector3 centerPoint, float xPos)
+    private void PlaceFirstRow(Vector3 centerPoint, float xPos)
     {
         if (arr1 == null || arr1.Length == 0 || objInFirstRow == null) return;
 
@@ -256,7 +280,7 @@ public class GameStartScript : MonoBehaviour
         }
     }
 
-    void PlaceSecondRow(Vector3 centerPoint, float xPos)
+    private void PlaceSecondRow(Vector3 centerPoint, float xPos)
     {
         if (arr2 == null || arr2.Length == 0 || objInSecondRow == null) return;
 
@@ -281,7 +305,7 @@ public class GameStartScript : MonoBehaviour
         }
     }
 
-    void PlaceThirdRow(Vector3 centerPoint, float xPos)
+    private void PlaceThirdRow(Vector3 centerPoint, float xPos)
     {
         if (resultObject == null) return;
 
@@ -304,7 +328,7 @@ public class GameStartScript : MonoBehaviour
         newResultObj.name = "NotFinalResultObject";
     }
 
-    void PlaceResultRow(Vector3 centerPoint, float xPos)
+    private void PlaceResultRow(Vector3 centerPoint, float xPos)
     {
         if (resultObject == null) return;
 
@@ -327,7 +351,7 @@ public class GameStartScript : MonoBehaviour
         newResultObj.name = "ResultObject";
     }
 
-    void ShuffleArray<T>(T[] array)
+    private void ShuffleArray<T>(T[] array)
     {
         System.Random random = new System.Random();
         int n = array.Length;
