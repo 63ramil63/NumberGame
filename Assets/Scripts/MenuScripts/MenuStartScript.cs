@@ -28,8 +28,9 @@ public class MenuStartScript : MonoBehaviour
         }
         if (background != null)
         {
-            CameraView.ScaleToFillCamera(background, Camera.main, false);
             background.GetComponent<SpriteRenderer>().sprite = DataHolder.backgrounds[Random.Range(0, DataHolder.backgrounds.Length)];
+            CameraView.ScaleToFillCamera(background, Camera.main, false);
+
         }
         if (endGameSound != null)
         {

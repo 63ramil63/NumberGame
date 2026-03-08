@@ -551,7 +551,7 @@ SpriteRenderer:
   m_SortingOrder: -2
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.5882353, g: 0.5372549, b: 0.6666667, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1312,10 +1312,7 @@ MonoBehaviour:
   objInSecondRow: {fileID: 7771417423626908473, guid: e89df5ba200ae8849abe69a38d56e82d, type: 3}
   notFinalResultObject: {fileID: 7771417423626908473, guid: edd6a077f93554348bbcb5c0f2eebb45, type: 3}
   resultObject: {fileID: 7771417423626908473, guid: 69fe99aea9ac73b41beddf85735b4bec, type: 3}
-  enableAutoSpacing: 0
   spacing: 1
-  horizontalPadding: 0
-  resultOffset: 2
   availableHeightRatio: 0.9
   minObjectHeight: 1.5
   maxObjectHeight: 3

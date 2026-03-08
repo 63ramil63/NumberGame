@@ -475,16 +475,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MenuStartScript
   background: {fileID: 763288598}
   backgrounds:
-  - {fileID: 2256824342529322987, guid: c846092ec1d37cf489397026904bc7ad, type: 3}
-  - {fileID: 8909260137939148307, guid: cc8d82dd354af534e87299f4bb0d27e4, type: 3}
-  - {fileID: -7291782823237551305, guid: 610aaca50b861574187a9cb44301a997, type: 3}
-  - {fileID: 125783609435764325, guid: e908cbc7db049f044ad2433fe4a25db3, type: 3}
-  - {fileID: -599807031316446277, guid: 08e14ac3635552a4e8d937f88ebf06ef, type: 3}
-  - {fileID: -5159053557996758453, guid: 6c1c46547329be34c823fb1bceaf6c8e, type: 3}
-  - {fileID: -3513966457675182229, guid: eefa4f7afa1a24449a2774abbdf9b2ec, type: 3}
-  - {fileID: -1500147510440472479, guid: e1d938811de0a0049a4e4379ec83175b, type: 3}
-  - {fileID: -4882712099950164100, guid: cb88733b5ee4f0c4e9a52a38170f9014, type: 3}
-  - {fileID: -6894422744251271753, guid: 159810d4c877c8b4f803e4da9a403eaf, type: 3}
+  - {fileID: 7835827027175055975, guid: 050332eba314c5042b5870b431fe6c0c, type: 3}
   startGameBtnSound: {fileID: 8300000, guid: 60c44084f64c44f40bd24752165dd4d2, type: 3}
   endGameSound: {fileID: 8300000, guid: 1b34680e5e1ac1148b4b6762276f77b2, type: 3}
   firstRowBtnSound:
