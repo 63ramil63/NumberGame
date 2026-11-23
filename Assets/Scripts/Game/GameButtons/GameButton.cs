@@ -50,6 +50,7 @@ public abstract class GameButton : MonoBehaviour
     public void Disconnect()
     {
         if (connected == null) return;
+        if (DataHolder.Instance.selectedButton != null) DataHolder.Instance.selectedButton.border.Hide();
 
         GameButton other = connected;
         connected = null;
