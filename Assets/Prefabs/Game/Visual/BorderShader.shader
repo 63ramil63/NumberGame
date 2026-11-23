@@ -40,19 +40,23 @@ Shader "CustomRenderTexture/BorderShader"
 
             fixed4 frag(v2f i) : SV_Target
             {
-                float2 p = i.uv - 0.5;
-                float angle = atan2(p.y, p.x);
+                float2 q = i.uv - 0.5;
+                float2 aq = abs(q);
 
-                // волна бежит по кругу вдоль рамки
-                float wave = sin(angle * _Waves - _Time.y * _Speed) * 0.5 + 0.5;
+                // позиция вдоль периметра, 0..4 (по часовой стрелке от правого верхнего угла)
+                float s;
+                if (aq.x > aq.y) s = (q.x > 0) ? (0.5 - q.y) : (2.5 + q.y);
+                else             s = (q.y > 0) ? (3.5 + q.x) : (1.5 - q.x);
+
+                // волна бежит вдоль рамки, цвет плавно перетекает между A и B
+                float wave = sin(s * 0.5 * UNITY_PI * _Waves - _Time.y * _Speed) * 0.5 + 0.5;
 
                 // расстояние до ближайшего края
                 float2 d = min(i.uv, 1 - i.uv);
                 float edge = min(d.x, d.y);
 
-                // толщина рамки "дышит" вместе с волной
-                float width = _BorderWidth * lerp(0.4, 1.0, wave);
-                float a = 1 - smoothstep(width - 0.015, width, edge);
+                // постоянная толщина
+                float a = 1 - smoothstep(_BorderWidth - 0.015, _BorderWidth, edge);
 
                 fixed3 col = lerp(_ColorA.rgb, _ColorB.rgb, wave) * i.color.rgb;
                 return fixed4(col, a * i.color.a);

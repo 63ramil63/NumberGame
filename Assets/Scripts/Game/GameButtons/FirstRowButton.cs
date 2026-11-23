@@ -6,9 +6,10 @@ public class FirstRowButton : GameButton
 
     protected override void HandleClick()
     {
+        FirstRowButton previous = DataHolder.Instance.selectedButton;
+
         if (IsAvailable)
         {
-            FirstRowButton previous = DataHolder.Instance.selectedButton;
             if (previous != null && previous != this) previous.border.Hide();
 
             DataHolder.Instance.selectedButton = this;
@@ -16,6 +17,7 @@ public class FirstRowButton : GameButton
         }
         else
         {
+            if (previous != null) previous.border.Hide();
             Disconnect();
         }
     }

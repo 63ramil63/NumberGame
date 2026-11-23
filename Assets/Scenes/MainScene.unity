@@ -943,7 +943,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.609
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1040,9 +1040,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundManager
   audioSource: {fileID: 1899749502}
-  select: {fileID: 8300000, guid: 84591539cabe8cc49aedd5f715ba26c9, type: 3}
-  connect: {fileID: 0}
-  release: {fileID: 0}
+  select: {fileID: 8300000, guid: 8fc2c5d0c23ac774388f19d87e9a4d28, type: 3}
+  connect: {fileID: 8300000, guid: 8fc2c5d0c23ac774388f19d87e9a4d28, type: 3}
+  release: {fileID: 8300000, guid: 8fc2c5d0c23ac774388f19d87e9a4d28, type: 3}
 --- !u!4 &1899749504
 Transform:
   m_ObjectHideFlags: 0
