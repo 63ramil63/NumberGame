@@ -29,6 +29,7 @@ public class StartButton : MonoBehaviour
     private void OnClick()
     {
         GameInfo.CountOfNumbers = countOfNumbers;
+        SoundManager.Instance.PlayOnSelect();
         SceneManager.LoadScene("GameScene");
     }
 

@@ -6,7 +6,10 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip select;
     [SerializeField] private AudioClip connect;
     [SerializeField] private AudioClip release;
-    
+
+    [SerializeField] private AudioSource musicSource;
+    [SerializeField] private AudioClip music;
+
     private SoundManager() { }
     public static SoundManager Instance { get; private set; }
 
@@ -19,6 +22,16 @@ public class SoundManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        if (music != null && musicSource != null)
+        {
+            musicSource.clip = music;
+            musicSource.loop = true;
+            musicSource.Play();
+        }
     }
 
     private void OnDestroy()

@@ -12,6 +12,7 @@ public class GameCanvas : MonoBehaviour
     [SerializeField] private TextMeshProUGUI slashSign;
     [SerializeField] private RectTransform leftPanel;
     [SerializeField] private RectTransform rightPanel;
+    [SerializeField] private TextMeshProUGUI bestTimeText;
     [SerializeField] private TextMeshProUGUI timer;
     [SerializeField] private Button retryButton;
 
@@ -26,6 +27,7 @@ public class GameCanvas : MonoBehaviour
     public RectTransform LeftPanel => leftPanel;
     public RectTransform RightPanel => rightPanel;
     public Button RetryButton => retryButton;
+    public TextMeshProUGUI BestTimeText => bestTimeText;
 
     private GameCanvas() { }
     public static GameCanvas Instance { get; private set; }
@@ -38,6 +40,19 @@ public class GameCanvas : MonoBehaviour
             return;
         }
         Instance = this;
+    }
+
+    private void Start()
+    {
+        float time = SaveStorage.GetBest(GameInfo.CountOfNumbers);
+        if (time < 0)
+        {
+            bestTimeText.SetText("Best Time\n--:--");
+        } 
+        else
+        {
+            bestTimeText.SetText("Best Time\n" + time.ToString("F2"));
+        }
     }
 
     public UIConnection CreateConnection(RectTransform from, RectTransform to, int lane)

@@ -48,5 +48,10 @@ public class SecondRowButton : GameButton
         DataHolder.Instance.isGameEnded = true;
         GameCanvas.Instance.SlashSign.SetText("");
         GameCanvas.Instance.RetryButton.gameObject.SetActive(true);
+
+        if (SaveStorage.TrySetBest(GameInfo.CountOfNumbers, GameTimer.Instance.Elapsed))
+        {
+            // todo win animation
+        }
     }
 }
